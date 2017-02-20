@@ -1,0 +1,25 @@
+.catalog:
+  name: "Vault"
+  version: "1.0.0"
+  description: |
+    This template creates a Vault credential store with the generic backend.
+  minimum_rancher_version: "1.0.2"
+  questions:
+  - variable: "vault_port"
+    label: "Vault port"
+    description: "Port on which the Vault service should be made accessible"
+    required: true
+    default: 8200
+    type: "int"
+vault:
+  scale: 1
+  metadata:
+    config.hcl: |
+      backend "file" {
+        path = "/data"
+      }
+
+      listener "tcp" {
+        address = "0.0.0.0:${vault_port}"
+        tls_disable = 1
+      }

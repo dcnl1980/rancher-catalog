@@ -1,0 +1,54 @@
+###############
+# APPLICATION #
+###############
+
+app:
+  image: nexus.docker1.brandung.dev:5000/magento2-php:7-apache
+  links:
+    - db
+    - redis01
+    - redis02
+    - memcached
+  environment:
+    - VIRTUAL_HOST=${vhost}
+  labels:
+    io.rancher.sidekicks: ssh
+  volumes:
+    - ${vhost}.app.etc:/var/www/html/app/etc
+    - ${vhost}.var:/var/www/html/var
+    - ${vhost}.pub.media:/var/www/html/pub/media
+
+ssh:
+  image: nexus.docker1.brandung.dev:5000/ssh:latest
+  volumes_from:
+    - app
+  ports:
+    - ":22"
+
+########
+# DATA #
+########
+
+dbadmin:
+  image: phpmyadmin/phpmyadmin
+  links:
+    - db
+  environment:
+    - VIRTUAL_HOST=phpmyadmin.${vhost}
+
+redis01:
+  image: redis
+
+redis02:
+  image: redis
+
+memcached:
+  image: memcached
+
+db:
+  image: mariadb
+  environment:
+    - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    - MYSQL_DATABASE=magento
+  volumes:
+    - ${vhost}.mysqldb:/var/lib/mysql
