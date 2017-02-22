@@ -18,8 +18,8 @@ application:
         - mongo
         - redis
     volumes:
-        - /private/var/lib/${application_name}_logs/nginx:/var/log/nginx
-        - /private/var/lib/${application_name}_storage:/var/www/laravel/storage
+        - /data/www/${application_name}/logs/nginx:/var/log/nginx
+        - /data/www/${application_name}/storage:/var/www/laravel/storage
 mysql:
     restart: always
     image: mysql
@@ -31,19 +31,19 @@ mysql:
         MYSQL_PASSWORD: ${mysql_password}
         MYSQL_ROOT_PASSWORD: ${mysql_root_password}
     volumes:
-        - /private/var/lib/${application_name}_mysql:/var/lib/mysql
+        - /data/www/${application_name}/mysql:/var/lib/mysql
 mongo:
     restart: always
     image: mongo
     expose:
         - "27017"
     volumes:
-        - /private/var/lib/${application_name}_data:/data
-        - /private/var/lib/${application_name}_logs/mongodb:/var/log/mongodb
+        - /data/www/${application_name}/data:/data
+        - /data/www/${application_name}/logs/mongodb:/var/log/mongodb
 redis:
     restart: always
     image: redis
     expose:
         - "6379"
     volumes:
-        - /private/var/lib/${application_name}_data:/data
+        - /data/www/${application_name}/data:/data
